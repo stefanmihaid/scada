@@ -30,6 +30,7 @@ class PoleInteract(View):
     #get the rotation speed. This must return a value of 1-3 based on the DB value for pole.speed
     def get(self, request):
         #take from the request the pole id
+        args = request.GET
         pole_id = args['pole_id']
         #find the pole with id x
         pole = Pole.objects.filter(id=pole_id).first()
@@ -37,13 +38,18 @@ class PoleInteract(View):
         speed = pole.rotationspeed
         return HttpResponse(speed, status=200)
 
+#post the environment data as captured by sensors 
     def post(self, request):
-
-
-
-
-
-
-
-
-
+        #parse post 
+        args = request.POST
+        pole_id = args['pole_id']
+        light = args['light_sensor']
+        temperature = args['temp_sensor']
+        soilmoisture = args['soilmoist_sensor']
+        #find the pole and set env data
+        pole = Pole.objects.filter(id=pole_id).first()
+        pole.lightsensor = light
+        pole.temperature = temperature
+        pole.soilmoisture = soilmoisture
+        pole.save()
+        return HttpResponse(status=200)
